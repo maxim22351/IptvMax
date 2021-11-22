@@ -4,13 +4,9 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 // @ts-ignore
-import { FixedSizeList } from 'react-window';
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
-import PropTypes from "prop-types";
-
+import { FixedSizeList,ListChildComponentProps  } from 'react-window';
 import {IListTV} from '../type/type'
+import {TextField} from "@mui/material";
 
 
 interface ListTVProps{
@@ -22,6 +18,13 @@ const ListTv:FC<ListTVProps> = ({list}) => {
 
 
     const [groupTV,setGroupTV] = useState<string[]>([]);
+    const [searchValue,setSearchValue] = useState<string>('');
+
+    const search:IListTV[] = list.filter(item => {
+        return item.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase());
+    })
+
+
 
     useEffect(()=>{
         list.map(item =>{
@@ -31,94 +34,47 @@ const ListTv:FC<ListTVProps> = ({list}) => {
     },[])
 
 
-    function renderRow(props: { index: number; style: any; }) {
+
+    function renderRow(props: ListChildComponentProps) {
         const { index, style } = props;
 
 
         return (
             <ListItem style={style} key={index} component="div" disablePadding>
                 <ListItemButton>
-                    <ListItemText primary={list[index].name} data-url={list[index].url}/>
+                    <ListItemText primary={search[index].name}/>
                 </ListItemButton>
             </ListItem>
         );
     }
 
-    function TabPanel(props: any) {
-        const { children, value, index, ...other } = props;
 
-        return (
-            <div
-                role="tabpanel"
-                hidden={value !== index}
-                id={`simple-tabpanel-${index}`}
-                aria-labelledby={`simple-tab-${index}`}
-                {...other}
-            >
-                {value === index && (
-                    <Box sx={{ p: 3 }}>
-                        <Typography>{children}</Typography>
-                    </Box>
-                )}
-            </div>
-        );
+    function searchInput (e:React.MouseEvent<HTMLInputElement>){
+        // @ts-ignore
+        setSearchValue(e.target.value)
+
     }
-
-    TabPanel.propTypes = {
-        children: PropTypes.node,
-        index: PropTypes.number.isRequired,
-        value: PropTypes.number.isRequired,
-    };
-
-    function a11yProps(index:number) {
-        return {
-            id: `simple-tab-${index}`,
-            'aria-controls': `simple-tabpanel-${index}`,
-        };
-    }
-
-    const [value, setValue] = React.useState(0);
-
-    const handleChange = (event:any, newValue:any) => {
-        setValue(newValue);
-    };
 
 
 
     return (
         <div>
-            <Box sx={{ width: '100%' }}>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                        {
-                            [...new Set(groupTV)].map((item,index) => (
-                                <Tab label={item} {...a11yProps(index)} key={index * 5 + item}/>
-                            ))
-                        }
-                    </Tabs>
-                </Box>
-                {
-                    [...new Set(groupTV)].map((item,index) => (
-                        <TabPanel value={value} index={index} key={index * 5 + item}>
-                            {item}
-                            <Box
-                                sx={{ width: '100%', height: 400, maxWidth: 360, backgroundColor: 'background.paper' }}
-                            >
-                                <FixedSizeList
-                                    height={400}
-                                    width={360}
-                                    itemSize={46}
-                                    itemCount={list.length}
-                                    overscanCount={5}
-                                >
-                                    {renderRow}
-                                </FixedSizeList>
-                            </Box>
-                        </TabPanel>
-                    ))
-                }
+            <Box sx={{width: '100%'}}>
+                <TextField id="demo-helper-text-misaligned-no-helper" label="Поиск" onInput={searchInput}/>
             </Box>
-
+            <Box
+                sx={{ width: '100%', height: 400, maxWidth: 360, backgroundColor: 'background.paper'}}
+            >
+                <FixedSizeList
+                    height={400}
+                    width={360}
+                    itemSize={46}
+                    itemCount={search.length}
+                    overscanCount={5}
+                >
+                    {renderRow}
+                </FixedSizeList>
+            </Box>
         </div>
     );
 };
