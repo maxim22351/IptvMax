@@ -30,3 +30,11 @@ export  interface Itvg {
 export interface IItems{
     items: IListTV
 }
+
+export interface ITV {
+    groupTV: string;
+    id: string;
+    logo: string;
+    name: string;
+    url: string;
+}

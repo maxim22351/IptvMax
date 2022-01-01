@@ -8,7 +8,6 @@ import Player from "./Components/Player";
 import axios from "axios";
 import {IItems, IListTV} from "./type/type";
 
-import {items} from './ListIPTV.json'
 
 
 const App:FC = () => {
@@ -20,9 +19,7 @@ const App:FC = () => {
 
 
     useEffect(()=>{
-        // getListTV();
-        setListTV(items);
-
+        getListTV();
 
     },[])
 
@@ -51,10 +48,6 @@ const App:FC = () => {
 
 
 
-
-
-
-
     // if (listTV.length < 0) return <ReactLoading color={'purple'} width={'30%'} type={'balls'} />;
 
     return (
@@ -67,7 +60,6 @@ const App:FC = () => {
                     <Player nameTV={nameTV} list={listTV}/>
                 </div>
             </Grid>
-
         </Grid>
     );
 };

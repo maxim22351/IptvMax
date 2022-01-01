@@ -6,7 +6,7 @@ import ListItemText from '@mui/material/ListItemText';
 // @ts-ignore
 import { FixedSizeList,ListChildComponentProps  } from 'react-window';
 import {IListTV} from '../type/type'
-import {Autocomplete, Avatar, ListItemAvatar, TextField} from "@mui/material";
+import {Autocomplete, Avatar, colors, ListItemAvatar, styled, TextField} from "@mui/material";
 
 
 interface ListTVProps{
@@ -202,17 +202,32 @@ const ListTv:FC<ListTVProps> = ({list}) => {
         }
     }
 
+    const ValidationTextField = styled(TextField)({
+        '& input:valid + fieldset': {
+            borderColor: 'green',
+            borderWidth: 2,
+        },
+        '& input:invalid + fieldset': {
+            borderColor: 'red',
+            borderWidth: 2,
+        },
+        '& input:valid:focus + fieldset': {
+            borderLeftWidth: 6,
+            padding: '4px !important', // override inline-style
+        },
+    });
+
 
     return (
         <div>
-            <Box sx={{width: '100%'}}>
+            <Box sx={{width: '100%', color: '#295aa8',backgroundColor: '#0D1117'}}>
                 <Autocomplete
                     id="free-solo-demo"
                     // @ts-ignore
                     onChange={filterСategor}
                     freeSolo
                     options={[...new Set(groupTV)].map((option) => option)}
-                    renderInput={(params) => <TextField {...params} label="Категории" />}
+                    renderInput={(params) => <TextField {...params} label="Категории"/>}
                 />
                 <TextField
                     id="demo-helper-text-misaligned-no-helper"
@@ -222,7 +237,7 @@ const ListTv:FC<ListTVProps> = ({list}) => {
                 />
             </Box>
             <Box
-                sx={{ width: '100%', height: '100%', maxWidth: 360, backgroundColor: 'background.paper'}}
+                sx={{ width: '100%', height: '100%', maxWidth: 360, backgroundColor: '#0D1117', color: '#295aa8'}}
             >
                 <FixedSizeList
                     height={550}
