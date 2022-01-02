@@ -6,15 +6,15 @@ import ListTV from "./Components/ListTV";
 import Player from "./Components/Player";
 
 import axios from "axios";
-import {IItems, IListTV} from "./type/type";
-
+import {IItems, IListTV, ITV} from "./type/type";
+;
 
 
 const App:FC = () => {
 
 
     const [nameTV,setNameTV]= useState<string | null>('');
-    const [listTV,setListTV] = useState<IListTV[]>([]);
+    const [listTV,setListTV] = useState<ITV[]>([]);
 
 
 
@@ -25,16 +25,16 @@ const App:FC = () => {
 
     async function getListTV() {
         try {
-            const response = await axios.get<IItems>('https://m-furman.online/');
+
+            // const response = await axios.get<ITV>(window.location.origin + '/back-end/');
+            const response = await axios.get<ITV>('http://localhost/IPTVMAX%20PHP/');
             // @ts-ignore
-            await setListTV(response.data.items)
+           setListTV(response.data);
 
         } catch (error) {
             console.error(error);
         }
     }
-
-    console.log(listTV)
 
 
     function checkName (e:React.MouseEvent<HTMLSpanElement>){
@@ -46,9 +46,6 @@ const App:FC = () => {
 
     }
 
-
-
-    // if (listTV.length < 0) return <ReactLoading color={'purple'} width={'30%'} type={'balls'} />;
 
     return (
         <Grid container spacing={5}>

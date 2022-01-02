@@ -79,3 +79,7 @@ body{
     }
 }
 
+.MuiOutlinedInput-input .MuiInputBase-input .MuiInputBase-inputAdornedEnd .MuiAutocomplete-input .MuiAutocomplete-inputFocused .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input{
+    color: #fff;
+}
+
