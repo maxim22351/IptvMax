@@ -1,9 +1,8 @@
-import React, {FC, useState} from 'react';
+import React, {FC, ReactNode, useState} from 'react';
 import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-// @ts-ignore
 import { FixedSizeList,ListChildComponentProps  } from 'react-window';
 import {ITV} from '../type/type'
 import {Autocomplete, Avatar, ListItemAvatar,  TextField} from "@mui/material";
@@ -12,40 +11,20 @@ import { makeStyles } from '@mui/styles';
 
 interface ListTVProps{
     list: ITV[];
+    filterListGroup: ReactNode;
 }
 
 
-const ListTv:FC<ListTVProps> = ({list}) => {
-    const [filterArr,setFilterArr] = useState<ITV[]>(list);
+const ListTv:FC<ListTVProps> = ({list,filterListGroup}) => {
 
     const [searchValue,setSearchValue] = useState<string>('');
 
-    const search:ITV[] = filterArr.filter(item => item.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()));
+    const search:ITV[] = list.filter(item => item.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()));
 
-    const [listCount,setListCount] = useState<number>(0);
-
-
-
-    function renderRow(props: ListChildComponentProps) {
-        const { index, style } = props;
-        return (
-            <ListItem style={style} key={index} component="div" disablePadding>
-                <ListItemButton>
-                    <ListItemAvatar>
-                        <Avatar alt={search[index].name} src={search[index].logo} style={{height: 'auto',borderRadius: '0'}}/>
-                    </ListItemAvatar>
-                    <ListItemText primary={search[index].name}/>
-                </ListItemButton>
-            </ListItem>
-        );
-    }
-
-
-    function searchInput (e:React.MouseEvent<HTMLInputElement>){
-        // @ts-ignore
-        setSearchValue(e.target.value)
-    }
-
+    const arrGroupFilter = list.reduce((accum:Record<string, ITV>, item) => {
+        accum[item['groupTV']] = item;
+        return accum;
+    }, {});
 
     const useStyles = makeStyles({
         root: {
@@ -65,8 +44,27 @@ const ListTv:FC<ListTVProps> = ({list}) => {
         },
     });
 
-    // @ts-ignore
-    const classes = useStyles();
+
+
+    function renderRow(props: ListChildComponentProps) {
+        const { index, style } = props;
+        return (
+            <ListItem style={style} key={index} component="div" disablePadding>
+                <ListItemButton>
+                    <ListItemAvatar>
+                        <Avatar alt={search[index].name} src={search[index].logo} style={{height: 'auto',borderRadius: '0'}}/>
+                    </ListItemAvatar>
+                    <ListItemText primary={search[index].name}/>
+                </ListItemButton>
+            </ListItem>
+        );
+    }
+
+    function searchInput (e:React.MouseEvent<HTMLInputElement>){
+        // @ts-ignore
+        setSearchValue(e.target.value)
+    }
+
 
     return (
         <div>
@@ -74,8 +72,8 @@ const ListTv:FC<ListTVProps> = ({list}) => {
                 <Autocomplete
                     id="free-solo-demo"
                     // @ts-ignore
-                    freeSolo
-                    options={list.map((option) => option.groupTV)}
+                    onChange={filterListGroup}
+                    options={Object.keys(arrGroupFilter).map((option) => option)}
                     renderInput={(params) => <TextField
                         {...params} label="Категории"
                         sx = {{
@@ -159,9 +157,9 @@ const ListTv:FC<ListTVProps> = ({list}) => {
                     height={550}
                     width={360}
                     itemSize={46}
-                    itemCount={(listCount === 0)? search.length : listCount}
+                    itemCount={search.length}
                     overscanCount={5}
-                    className={classes.root}
+                    className={useStyles().root}
                 >
                     {renderRow}
                 </FixedSizeList>

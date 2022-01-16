@@ -1,6 +1,8 @@
-import React, {FC} from 'react';
-import ReactPlayer from "react-player";
-import {IListTV,ITV} from '../type/type'
+import React, {FC,useRef,useEffect} from 'react';
+import {ITV} from '../type/type'
+import "plyr-react/dist/plyr.css";
+import Hls from "hls.js";
+import Plyr, { APITypes, PlyrProps, PlyrInstance } from "plyr-react";
 
 interface PlayerProps{
     nameTV: string | null,
@@ -15,22 +17,40 @@ const Player:FC<PlayerProps> = ({nameTV,list}) => {
         return accum;
     }, {});
 
+    const ref = useRef<APITypes>(null);
+    useEffect(() => {
+        const loadVideo = async () => {
+            const video = document.getElementById("plyr") as HTMLVideoElement;
+            let hls = new Hls();
+            // @ts-ignore
+            hls.loadSource(urlObj[nameTV].url);
+            hls.attachMedia(video);
+            // @ts-ignore
+            ref.current!.plyr.media = video;
+
+            hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                (ref.current!.plyr as PlyrInstance).play();
+            });
+        };
+        loadVideo().then(r => console.log(r));
+    });
+
 
 
     return (
         (nameTV)?
-                (<ReactPlayer url={urlObj[nameTV].url} playing={true} controls={true} width={'100%'} height={'50%'} />)
+                (
+                    <Plyr
+                        id="plyr"
+                        options={{ volume: 0.1 }}
+                        source={{} as PlyrProps["source"]}
+                        ref={ref}
+                        style={{width:'100%'}}
+                    />
+                )
             :
                 (
                     <h1 style={{textAlign: 'center'}}> 👈 Выберите канал для просмотра</h1>
-
-                    // <ReactPlayer
-                    //     url='http://chopin.af-stream.com/1nezalegny-ua/video.m3u8?token=5rcfyyx5'
-                    //     playing={true}
-                    //     controls={true}
-                    //     width={'100%'}
-                    //     height={'50%'}
-                    // />
                 )
     );
 };

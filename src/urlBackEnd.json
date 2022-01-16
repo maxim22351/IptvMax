@@ -1,0 +1,6 @@
+{
+  "urlAllListLocal": "http://localhost/IPTVMAX%20PHP/",
+  "urlGroupListLocal" : "http://localhost/IPTVMAX%20PHP/?group=",
+  "urlAllListHost": "https://m-furman.ru/back-end",
+  "urlGroupListHost" : "https://m-furman.ru/back-end/?group="
+}
